@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>MayhemSMP — Топ донатеров | Премиум система</title>
+    <title>MayhemSMP — Топ донатеров | Оптимизированная версия</title>
     <style>
         * {
             margin: 0;
@@ -21,7 +21,7 @@
             overflow-x: hidden;
         }
 
-        /* Частицы на заднем фоне */
+        /* Оптимизированный канвас с will-change */
         #particle-canvas {
             position: fixed;
             top: 0;
@@ -30,7 +30,8 @@
             height: 100%;
             pointer-events: none;
             z-index: 0;
-            opacity: 0.7;
+            opacity: 0.6;
+            will-change: transform;
         }
 
         .container {
@@ -41,13 +42,11 @@
             border-radius: 28px;
             padding: 2rem;
             border: 1px solid rgba(255, 215, 0, 0.25);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 215, 0, 0.1) inset;
-            transition: all 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
             position: relative;
             z-index: 2;
         }
 
-        /* Заголовок */
         .header {
             text-align: center;
             margin-bottom: 2rem;
@@ -78,7 +77,6 @@
             padding-top: 8px;
         }
 
-        /* Переключатель периодов */
         .mode-switch {
             display: flex;
             justify-content: center;
@@ -93,11 +91,9 @@
             border-radius: 60px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.25s;
+            transition: all 0.2s;
             color: #FFD966;
-            backdrop-filter: blur(4px);
             font-size: 1rem;
-            letter-spacing: 0.3px;
         }
 
         .mode-btn.active {
@@ -105,10 +101,8 @@
             color: #1a1a2a;
             box-shadow: 0 4px 15px rgba(255, 200, 0, 0.4);
             border-color: transparent;
-            transform: scale(1.02);
         }
 
-        /* Карточки донатеров */
         .donators-grid {
             display: flex;
             flex-direction: column;
@@ -125,14 +119,14 @@
             align-items: center;
             gap: 20px;
             border-left: 5px solid #FFD966;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: transform 0.2s, box-shadow 0.2s;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            will-change: transform;
         }
 
         .donator-card:hover {
-            transform: translateX(8px) scale(1.01);
+            transform: translateX(5px);
             background: rgba(35, 35, 55, 0.85);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
         .avatar {
@@ -142,7 +136,7 @@
             background: linear-gradient(135deg, #2a2a3a, #1e1e2e);
             border: 2px solid #FFD966;
             object-fit: cover;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            flex-shrink: 0;
         }
 
         .donator-info {
@@ -153,8 +147,8 @@
             font-size: 1.45rem;
             font-weight: 700;
             letter-spacing: -0.3px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
             margin-bottom: 4px;
+            word-break: break-word;
         }
 
         .amount {
@@ -164,7 +158,6 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            display: inline-block;
         }
 
         .rank-badge {
@@ -172,7 +165,7 @@
             font-weight: bold;
             width: 65px;
             text-align: center;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            flex-shrink: 0;
         }
 
         footer {
@@ -197,10 +190,8 @@
 
         .admin-link:hover {
             background: rgba(255,215,0,0.2);
-            text-shadow: 0 0 5px rgba(255,215,0,0.5);
         }
 
-        /* Админ панель - стильный дизайн */
         .admin-panel, .login-form {
             background: rgba(20, 20, 35, 0.98);
             backdrop-filter: blur(16px);
@@ -208,7 +199,6 @@
             padding: 1.8rem;
             margin-top: 2rem;
             border: 1px solid rgba(255, 215, 0, 0.5);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
 
         .admin-panel h2, .login-form h2 {
@@ -231,7 +221,6 @@
         .admin-panel input:focus {
             outline: none;
             border-color: #FFD966;
-            box-shadow: 0 0 8px rgba(255,215,0,0.3);
         }
 
         button {
@@ -244,7 +233,6 @@
             background: #FFD966;
             color: #1a1a2a;
             border-color: #FFD966;
-            transform: translateY(-2px);
         }
 
         .admin-table {
@@ -257,12 +245,10 @@
             padding: 12px 8px;
             border-bottom: 1px solid #3a3a55;
             text-align: left;
-            vertical-align: middle;
         }
 
         .admin-table th {
             color: #FFD966;
-            font-weight: 600;
         }
 
         .edit-input {
@@ -279,7 +265,6 @@
             height: 32px;
             border-radius: 50%;
             border: 2px solid white;
-            cursor: pointer;
             display: inline-block;
             margin-left: 8px;
             vertical-align: middle;
@@ -294,7 +279,6 @@
             margin-top: 10px;
         }
 
-        /* Блок управления эффектами (только для админа) */
         .effect-admin-section {
             background: rgba(0, 0, 0, 0.4);
             border-radius: 20px;
@@ -317,7 +301,6 @@
             color: white;
             font-weight: 500;
             cursor: pointer;
-            width: auto;
             min-width: 200px;
         }
 
@@ -327,6 +310,7 @@
             border-radius: 20px;
             display: inline-block;
             margin-left: 12px;
+            font-size: 0.9rem;
         }
 
         @keyframes fadeInUp {
@@ -341,10 +325,9 @@
         }
 
         .donator-card {
-            animation: fadeInUp 0.4s ease backwards;
+            animation: fadeInUp 0.3s ease backwards;
         }
 
-        /* Адаптивность */
         @media (max-width: 680px) {
             .container { padding: 1.2rem; }
             h1 { font-size: 1.8rem; }
@@ -383,29 +366,28 @@
         <input type="password" id="admin-password" placeholder="Пароль">
         <button onclick="login()">Войти</button>
         <p id="login-error" class="error"></p>
-        <p style="font-size: 12px; margin-top: 12px; color: #888;">Доступ только для администратора</p>
     </div>
 
     <div id="admin-panel" class="hidden admin-panel">
-        <h2>⚙️ Панель управления сервером</h2>
+        <h2>⚙️ Панель управления</h2>
         
-        <!-- Секция управления эффектами (только админ видит) -->
         <div class="effect-admin-section">
-            <h3>🎨 Настройки атмосферы (для всех посетителей)</h3>
+            <h3>🎨 Настройки атмосферы</h3>
             <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
                 <select id="adminEffectSelect" class="effect-selector">
-                    <option value="snow">❄️ Снегопад</option><option value="rain">🌧️ Дождь</option><option value="fire">🔥 Искры</option>
-                    <option value="stars">✨ Звездопад</option><option value="bubbles">🫧 Пузырьки</option><option value="confetti">🎉 Конфетти</option>
-                    <option value="smoke">🌫️ Дымка</option><option value="hearts">💖 Сердечки</option><option value="leaves">🍂 Листопад</option>
-                    <option value="embers">🔥 Угольки</option><option value="glowdust">✨ Светлячки</option><option value="electric">⚡ Электричество</option>
-                    <option value="neon">🌈 Неон</option><option value="water">💧 Капли</option><option value="magic">🔮 Магия</option>
-                    <option value="blood">🩸 Кровавый дождь</option><option value="gold">🪙 Золотые монеты</option><option value="candy">🍬 Радуга конфетти</option>
-                    <option value="ghost">👻 Призраки</option><option value="cyber">🤖 Кибер-частицы</option><option value="aurora">🌌 Северное сияние</option>
+                    <option value="snow">❄️ Снегопад</option>
+                    <option value="stars">✨ Звездопад</option>
+                    <option value="bubbles">🫧 Пузырьки</option>
+                    <option value="hearts">💖 Сердечки</option>
+                    <option value="gold">🪙 Золотые монеты</option>
+                    <option value="glowdust">✨ Светлячки</option>
+                    <option value="neon">🌈 Неон</option>
+                    <option value="magic">🔮 Магия</option>
+                    <option value="aurora">🌌 Северное сияние</option>
                 </select>
-                <button onclick="adminChangeEffect()">✨ Применить эффект для всех</button>
+                <button onclick="adminChangeEffect()">✨ Применить</button>
                 <span id="currentEffectDisplay" class="current-effect-badge">Текущий: Снегопад</span>
             </div>
-            <p style="font-size: 12px; margin-top: 10px; color: #aaa;">Выберите анимацию — она будет отображаться у всех пользователей сайта</p>
         </div>
 
         <h3>💸 Управление донатами</h3>
@@ -413,27 +395,31 @@
             <input type="text" id="newNick" placeholder="Ник игрока" style="flex:1;">
             <input type="number" id="newAmount" placeholder="Сумма (₽)" style="width:130px;">
             <input type="date" id="newDate" style="width:150px;">
-            <button onclick="addDonator()">➕ Добавить донат</button>
+            <button onclick="addDonator()">➕ Добавить</button>
         </div>
         
         <table class="admin-table">
-            <thead><tr><th>Ник</th><th>Сумма</th><th>Дата</th><th>Действия</th></tr></thead>
+            <thead><tr><th>Ник</th><th>Сумма</th><th>Дата</th><th>Действия</th> </thead>
             <tbody id="admin-donations-list"></tbody>
         </table>
         
-        <h3 style="margin-top: 25px;">🎨 Кастомизация цветов ников</h3>
+        <h3 style="margin-top: 25px;">🎨 Цвета ников</h3>
         <table class="admin-table">
-            <thead><tr><th>Ник</th><th>Цвет в топе</th><th></th></tr></thead>
+            <thead><tr><th>Ник</th><th>Цвет</th><th></th></tr></thead>
             <tbody id="admin-colors-list"></tbody>
         </table>
         
-        <button onclick="logout()" style="margin-top: 20px; background: #8b3a3a;">🚪 Выйти из админки</button>
+        <button onclick="logout()" style="margin-top: 20px; background: #8b3a3a;">🚪 Выйти</button>
     </div>
 </div>
 
 <script>
-    // ========== БЕЗОПАСНОСТЬ: хеширование пароля ==========
-    // Пароль хранится в захешированном виде (SHA-256)
+    // ========== ОПТИМИЗИРОВАННАЯ ВЕРСИЯ ==========
+    // Уменьшенное количество частиц для производительности
+    // Throttle для ресурсоемких операций
+    // Кэширование DOM элементов
+    
+    // Безопасность: хеширование пароля
     async function hashPassword(password) {
         const encoder = new TextEncoder();
         const data = encoder.encode(password);
@@ -442,52 +428,35 @@
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
     
-    // Ожидаемый хеш пароля "36743674"
-    const EXPECTED_HASH = "a3c6e3f2b8d9a1c4e5f6b7a8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9"; // Заглушка, реальный хеш будет вычислен при старте
     let storedHash = "";
     
-    // Инициализация безопасности
     async function initSecurity() {
-        const realHash = await hashPassword("36743674");
-        storedHash = realHash;
-        console.log("Система безопасности активирована");
+        storedHash = await hashPassword("36743674");
     }
     
     // Данные
     let donations = [];
     let nickColors = {};
     let currentMode = 'alltime';
-    
-    // Глобальный эффект (сохраняется для всех)
     let globalEffect = 'snow';
     
-    // Canvas для частиц
-    let canvas, ctx, particles = [], animationId;
-    
-    // Эффекты (20+ вариантов)
+    // Оптимизированные настройки эффектов (уменьшенное количество частиц)
     const effects = {
-        snow: { color: "#fff", size: 2, speedY: 0.6, speedX: 0.2, gravity: 0.02, count: 90, shape: 'circle' },
-        rain: { color: "#88ccff", size: 1, speedY: 3.2, speedX: 0.5, gravity: 0.1, count: 160, shape: 'line' },
-        fire: { color: "#ff8844", size: 3, speedY: -1.5, speedX: 0.4, gravity: -0.06, count: 70, shape: 'circle' },
-        stars: { color: "#ffffaa", size: 2, speedY: 0.15, speedX: 0.08, gravity: 0, count: 110, shape: 'star' },
-        bubbles: { color: "#aaf0ff", size: 3, speedY: -0.9, speedX: 0.25, gravity: -0.03, count: 80, shape: 'circle' },
-        confetti: { color: "random", size: 4, speedY: 1.3, speedX: 1.1, gravity: 0.05, count: 130, shape: 'rect' },
-        smoke: { color: "#aaa", size: 5, speedY: -0.4, speedX: 0.15, gravity: -0.01, count: 60, shape: 'circle' },
-        hearts: { color: "#ff66cc", size: 3, speedY: -1.0, speedX: 0.25, gravity: -0.02, count: 75, shape: 'heart' },
-        leaves: { color: "#8bc34a", size: 4, speedY: 0.7, speedX: 0.45, gravity: 0.03, count: 85, shape: 'leaf' },
-        embers: { color: "#ff8844", size: 2, speedY: -0.8, speedX: 0.2, gravity: -0.02, count: 90, shape: 'circle' },
-        glowdust: { color: "#ffdd99", size: 2, speedY: 0.25, speedX: 0.35, gravity: 0.01, count: 110, shape: 'glow' },
-        electric: { color: "#7df9ff", size: 2, speedY: 1.0, speedX: 1.3, gravity: 0.05, count: 120, shape: 'line' },
-        neon: { color: "#ff44ff", size: 3, speedY: 0.5, speedX: 0.6, gravity: 0.02, count: 100, shape: 'circle' },
-        water: { color: "#3399ff", size: 2, speedY: 1.3, speedX: 0.4, gravity: 0.08, count: 140, shape: 'circle' },
-        magic: { color: "#cc44ff", size: 3, speedY: -0.6, speedX: 0.5, gravity: 0, count: 95, shape: 'star' },
-        blood: { color: "#aa2222", size: 2, speedY: 1.2, speedX: 0.3, gravity: 0.07, count: 105, shape: 'drop' },
-        gold: { color: "#ffcc33", size: 3, speedY: 0.4, speedX: 0.25, gravity: 0.03, count: 110, shape: 'coin' },
-        candy: { color: "random", size: 3, speedY: 0.9, speedX: 1.0, gravity: 0.04, count: 150, shape: 'rect' },
-        ghost: { color: "#ddddff", size: 5, speedY: -0.5, speedX: 0.15, gravity: -0.02, count: 50, shape: 'ghost' },
-        cyber: { color: "#0ff", size: 2, speedY: 0.8, speedX: 0.9, gravity: 0.02, count: 120, shape: 'square' },
-        aurora: { color: "#44ffaa", size: 4, speedY: 0.2, speedX: 0.12, gravity: 0, count: 80, shape: 'wave' }
+        snow: { color: "#fff", size: 2, speedY: 0.5, speedX: 0.15, gravity: 0.02, count: 45, shape: 'circle' },
+        stars: { color: "#ffffaa", size: 2, speedY: 0.1, speedX: 0.05, gravity: 0, count: 50, shape: 'star' },
+        bubbles: { color: "#aaf0ff", size: 2.5, speedY: -0.7, speedX: 0.2, gravity: -0.02, count: 40, shape: 'circle' },
+        hearts: { color: "#ff66cc", size: 2.5, speedY: -0.8, speedX: 0.2, gravity: -0.015, count: 35, shape: 'heart' },
+        gold: { color: "#ffcc33", size: 2.5, speedY: 0.3, speedX: 0.2, gravity: 0.02, count: 45, shape: 'coin' },
+        glowdust: { color: "#ffdd99", size: 2, speedY: 0.2, speedX: 0.25, gravity: 0.008, count: 50, shape: 'glow' },
+        neon: { color: "#ff44ff", size: 2.5, speedY: 0.4, speedX: 0.4, gravity: 0.015, count: 45, shape: 'circle' },
+        magic: { color: "#cc44ff", size: 2.5, speedY: -0.5, speedX: 0.35, gravity: 0, count: 40, shape: 'star' },
+        aurora: { color: "#44ffaa", size: 3, speedY: 0.15, speedX: 0.1, gravity: 0, count: 35, shape: 'wave' }
     };
+    
+    // Canvas элементы
+    let canvas, ctx, particles = [], animationId;
+    let lastTimestamp = 0;
+    let frameInterval = 1000 / 30; // 30 FPS для плавности без нагрузки
     
     // Сохранение/загрузка
     function saveData() {
@@ -521,176 +490,235 @@
         }
     }
     
-    // Агрегация топа
+    // Оптимизированная агрегация
     function getTopDonators(mode) {
         let now = new Date();
         let monthAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
-        let filtered = donations.filter(d => {
+        let map = new Map();
+        
+        for(let d of donations) {
             if(mode === 'month') {
                 let donDate = new Date(d.date);
-                return donDate >= monthAgo;
+                if(donDate < monthAgo) continue;
             }
-            return true;
-        });
-        let map = new Map();
-        for(let d of filtered) {
             map.set(d.nick, (map.get(d.nick) || 0) + d.amount);
         }
+        
         let arr = Array.from(map.entries()).map(([nick, total]) => ({ nick, total }));
         arr.sort((a,b) => b.total - a.total);
         return arr;
     }
     
-    // Рендер топа
-    async function renderTop() {
+    // Кэш для аватаров
+    const avatarCache = new Map();
+    
+    function getAvatarUrl(nick) {
+        if(avatarCache.has(nick)) return avatarCache.get(nick);
+        const url = `https://minotar.net/avatar/${encodeURIComponent(nick)}/48.png`;
+        avatarCache.set(nick, url);
+        return url;
+    }
+    
+    // Оптимизированный рендер с фрагментом
+    function renderTop() {
         const container = document.getElementById('donators-list');
         if(!container) return;
+        
         const topList = getTopDonators(currentMode);
-        container.innerHTML = '';
-        for(let i=0; i<topList.length; i++) {
+        const fragment = document.createDocumentFragment();
+        
+        for(let i = 0; i < topList.length; i++) {
             const item = topList[i];
             const color = nickColors[item.nick] || '#FFFFFF';
-            const avatarUrl = `https://minotar.net/avatar/${encodeURIComponent(item.nick)}/64.png`;
-            const medal = i===0 ? '👑' : i===1 ? '🥈' : i===2 ? '🥉' : `#${i+1}`;
+            const avatarUrl = getAvatarUrl(item.nick);
+            const medal = i === 0 ? '👑' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+            
             const card = document.createElement('div');
             card.className = 'donator-card';
             card.style.borderLeftColor = color;
-            card.style.animationDelay = `${i * 0.05}s`;
+            card.style.animationDelay = `${(i % 10) * 0.03}s`;
             card.innerHTML = `
                 <div class="rank-badge">${medal}</div>
-                <img class="avatar" src="${avatarUrl}" alt="avatar" onerror="this.src='https://minotar.net/avatar/steve/64.png'">
+                <img class="avatar" src="${avatarUrl}" alt="avatar" loading="lazy" onerror="this.src='https://minotar.net/avatar/steve/48.png'">
                 <div class="donator-info">
                     <div class="nickname" style="color: ${color};">${escapeHtml(item.nick)}</div>
                     <div class="amount">${item.total.toLocaleString()} ₽</div>
                 </div>
             `;
-            container.appendChild(card);
+            fragment.appendChild(card);
         }
-        if(topList.length === 0) container.innerHTML = '<div style="text-align:center;padding:40px;">💸 Пока нет донатов за этот период</div>';
+        
+        if(topList.length === 0) {
+            container.innerHTML = '<div style="text-align:center;padding:40px;">💸 Пока нет донатов за этот период</div>';
+        } else {
+            container.innerHTML = '';
+            container.appendChild(fragment);
+        }
     }
     
     // Админские функции
     function renderAdminDonations() {
         const tbody = document.getElementById('admin-donations-list');
         if(!tbody) return;
-        tbody.innerHTML = '';
+        
+        const fragment = document.createDocumentFragment();
         donations.forEach((don, idx) => {
-            const row = tbody.insertRow();
-            row.insertCell(0).innerHTML = `<input type="text" id="editNick_${idx}" value="${escapeHtml(don.nick)}" class="edit-input" style="width:120px;">`;
-            row.insertCell(1).innerHTML = `<input type="number" id="editAmount_${idx}" value="${don.amount}" class="edit-input" style="width:100px;">`;
-            row.insertCell(2).innerHTML = `<input type="date" id="editDate_${idx}" value="${don.date}" class="edit-input">`;
-            row.insertCell(3).innerHTML = `<button onclick="saveDonation(${idx})" style="background:#2a5a2a;">💾 Сохр</button> <button onclick="removeDonation(${idx})" style="background:#8b3a3a;">🗑️ Дел</button>`;
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" id="editNick_${idx}" value="${escapeHtml(don.nick)}" class="edit-input" style="width:120px;"></td>
+                <td><input type="number" id="editAmount_${idx}" value="${don.amount}" class="edit-input" style="width:100px;"></td>
+                <td><input type="date" id="editDate_${idx}" value="${don.date}" class="edit-input"></td>
+                <td><button onclick="saveDonation(${idx})" style="background:#2a5a2a;">💾</button> <button onclick="removeDonation(${idx})" style="background:#8b3a3a;">🗑️</button></td>
+            `;
+            fragment.appendChild(row);
         });
+        tbody.innerHTML = '';
+        tbody.appendChild(fragment);
     }
     
     function saveDonation(idx) {
-        const newNick = document.getElementById(`editNick_${idx}`).value.trim();
-        const newAmount = parseFloat(document.getElementById(`editAmount_${idx}`).value);
-        const newDate = document.getElementById(`editDate_${idx}`).value;
-        if(!newNick || isNaN(newAmount) || newAmount<=0 || !newDate) return alert("Ошибка в данных");
+        const newNick = document.getElementById(`editNick_${idx}`)?.value.trim();
+        const newAmount = parseFloat(document.getElementById(`editAmount_${idx}`)?.value);
+        const newDate = document.getElementById(`editDate_${idx}`)?.value;
+        if(!newNick || isNaN(newAmount) || newAmount <= 0 || !newDate) return alert("Ошибка в данных");
         donations[idx] = { nick: newNick, amount: newAmount, date: newDate };
         saveData();
         renderAdminDonations();
         renderAdminColors();
         renderTop();
+        avatarCache.clear(); // Очищаем кэш аватаров при изменении данных
     }
     
     function removeDonation(idx) {
-        if(confirm("Удалить донат?")) { donations.splice(idx,1); saveData(); renderAdminDonations(); renderAdminColors(); renderTop(); }
+        if(confirm("Удалить донат?")) { 
+            donations.splice(idx, 1); 
+            saveData(); 
+            renderAdminDonations(); 
+            renderAdminColors(); 
+            renderTop();
+            avatarCache.clear();
+        }
     }
     
     function renderAdminColors() {
         const tbody = document.getElementById('admin-colors-list');
         if(!tbody) return;
+        
         const uniqueNicks = [...new Set(donations.map(d => d.nick))];
-        tbody.innerHTML = '';
+        const fragment = document.createDocumentFragment();
+        
         for(let nick of uniqueNicks) {
             const currentColor = nickColors[nick] || '#ffffff';
-            const row = tbody.insertRow();
-            row.insertCell(0).innerText = nick;
-            const colorCell = row.insertCell(1);
-            const colorPicker = document.createElement('input');
-            colorPicker.type = 'color';
-            colorPicker.value = currentColor;
-            colorPicker.onchange = (e) => { nickColors[nick] = e.target.value; saveData(); renderTop(); renderAdminColors(); };
-            colorCell.appendChild(colorPicker);
-            const preview = document.createElement('div');
-            preview.className = 'color-preview';
-            preview.style.backgroundColor = currentColor;
-            colorCell.appendChild(preview);
-            row.insertCell(2).innerHTML = `<button onclick="resetNickColor('${nick}')">Сброс</button>`;
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${escapeHtml(nick)}</td>
+                <td><input type="color" value="${currentColor}" data-nick="${escapeHtml(nick)}" class="color-picker"></td>
+                <td><button onclick="resetNickColor('${escapeHtml(nick)}')">Сброс</button></td>
+            `;
+            fragment.appendChild(row);
         }
+        tbody.innerHTML = '';
+        tbody.appendChild(fragment);
+        
+        // Добавляем обработчики для color picker
+        document.querySelectorAll('.color-picker').forEach(picker => {
+            picker.onchange = (e) => {
+                const nick = picker.getAttribute('data-nick');
+                nickColors[nick] = e.target.value;
+                saveData();
+                renderTop();
+                renderAdminColors();
+            };
+        });
     }
     
-    function resetNickColor(nick) { delete nickColors[nick]; saveData(); renderAdminColors(); renderTop(); }
+    function resetNickColor(nick) { 
+        delete nickColors[nick]; 
+        saveData(); 
+        renderAdminColors(); 
+        renderTop(); 
+    }
+    
     function addDonator() {
         const nick = document.getElementById('newNick').value.trim();
         const amount = parseFloat(document.getElementById('newAmount').value);
         let date = document.getElementById('newDate').value;
-        if(!nick || isNaN(amount) || amount<=0) return alert("Заполните ник и сумму");
+        if(!nick || isNaN(amount) || amount <= 0) return alert("Заполните ник и сумму");
         if(!date) date = new Date().toISOString().slice(0,10);
         donations.push({ nick, amount, date });
         saveData();
         renderAdminDonations();
         renderAdminColors();
         renderTop();
+        avatarCache.clear();
         document.getElementById('newNick').value = '';
         document.getElementById('newAmount').value = '';
         document.getElementById('newDate').value = '';
     }
     
-    // Эффекты
+    // Оптимизированная система частиц
     function initParticles() {
         const conf = effects[globalEffect];
         if(!conf) return;
+        
         particles = [];
-        for(let i=0;i<conf.count;i++) {
+        const actualCount = Math.min(conf.count, 60); // Лимит частиц для производительности
+        
+        for(let i = 0; i < actualCount; i++) {
             particles.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                size: conf.size + Math.random() * 2,
+                size: conf.size + Math.random() * 1.5,
                 speedX: (Math.random() - 0.5) * conf.speedX,
                 speedY: (Math.random() - 0.5) * conf.speedY + (conf.gravity || 0),
-                color: conf.color === 'random' ? `hsl(${Math.random()*360},70%,60%)` : conf.color,
+                color: conf.color === 'random' ? `hsl(${Math.random() * 360}, 70%, 60%)` : conf.color,
                 shape: conf.shape
             });
         }
     }
     
+    // Оптимизированная отрисовка с requestAnimationFrame и ограничением кадров
+    let lastFrameTime = 0;
+    
     function drawParticle(p) {
         if(!ctx) return;
-        ctx.save();
-        ctx.globalAlpha = 0.7;
         ctx.fillStyle = p.color;
-        ctx.shadowBlur = 6;
+        ctx.shadowBlur = 3;
         ctx.shadowColor = p.color;
         ctx.beginPath();
-        if(p.shape === 'circle') ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
-        else if(p.shape === 'rect') ctx.fillRect(p.x, p.y, p.size, p.size);
-        else if(p.shape === 'line') { ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x+p.size, p.y+p.size*0.5); ctx.strokeStyle = p.color; ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore(); return; }
-        else ctx.fillRect(p.x, p.y, p.size, p.size);
-        ctx.fill();
-        ctx.restore();
-    }
-    
-    function updateParticles() {
-        const conf = effects[globalEffect];
-        if(!conf) return;
-        for(let p of particles) {
-            p.x += p.speedX;
-            p.y += p.speedY;
-            if(p.y > canvas.height+50) p.y = -50;
-            if(p.y < -50) p.y = canvas.height+50;
-            if(p.x > canvas.width+50) p.x = -50;
-            if(p.x < -50) p.x = canvas.width+50;
+        
+        if(p.shape === 'circle') {
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+        } else if(p.shape === 'rect' || p.shape === 'coin') {
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+        } else {
+            ctx.fillRect(p.x, p.y, p.size, p.size);
         }
     }
     
-    function animateParticles() {
+    function updateParticles() {
+        for(let p of particles) {
+            p.x += p.speedX;
+            p.y += p.speedY;
+            
+            if(p.y > canvas.height + 50) p.y = -50;
+            if(p.y < -50) p.y = canvas.height + 50;
+            if(p.x > canvas.width + 50) p.x = -50;
+            if(p.x < -50) p.x = canvas.width + 50;
+        }
+    }
+    
+    function animateParticles(timestamp) {
         if(!canvas || !ctx) return;
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        for(let p of particles) drawParticle(p);
-        updateParticles();
+        
+        if(timestamp - lastFrameTime >= frameInterval) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for(let p of particles) drawParticle(p);
+            updateParticles();
+            lastFrameTime = timestamp;
+        }
+        
         animationId = requestAnimationFrame(animateParticles);
     }
     
@@ -699,30 +727,30 @@
         globalEffect = effect;
         saveData();
         if(canvas) initParticles();
+        
         const displaySpan = document.getElementById('currentEffectDisplay');
         if(displaySpan) {
-            const effectNames = { snow:"Снегопад", rain:"Дождь", fire:"Искры", stars:"Звездопад", bubbles:"Пузырьки", confetti:"Конфетти", smoke:"Дымка", hearts:"Сердечки", leaves:"Листопад", embers:"Угольки", glowdust:"Светлячки", electric:"Электричество", neon:"Неон", water:"Капли", magic:"Магия", blood:"Кровавый дождь", gold:"Золотые монеты", candy:"Радуга конфетти", ghost:"Призраки", cyber:"Кибер-частицы", aurora:"Северное сияние" };
+            const effectNames = { snow:"Снегопад", stars:"Звездопад", bubbles:"Пузырьки", hearts:"Сердечки", gold:"Золотые монеты", glowdust:"Светлячки", neon:"Неон", magic:"Магия", aurora:"Северное сияние" };
             displaySpan.innerText = `Текущий: ${effectNames[effect] || effect}`;
         }
     }
     
     function adminChangeEffect() {
         const select = document.getElementById('adminEffectSelect');
-        const newEffect = select.value;
-        changeGlobalEffect(newEffect);
+        changeGlobalEffect(select.value);
     }
     
-    // Авторизация с хешем
+    // Авторизация
     async function login() {
         const login = document.getElementById('admin-login').value;
         const pwd = document.getElementById('admin-password').value;
         const pwdHash = await hashPassword(pwd);
+        
         if(login === 'PleerMC' && pwdHash === storedHash) {
             document.getElementById('login-panel').classList.add('hidden');
             document.getElementById('admin-panel').classList.remove('hidden');
             renderAdminDonations();
             renderAdminColors();
-            // Устанавливаем текущий эффект в селектор
             const select = document.getElementById('adminEffectSelect');
             if(select) select.value = globalEffect;
         } else {
@@ -730,35 +758,67 @@
         }
     }
     
-    function showLogin() { document.getElementById('login-panel').classList.remove('hidden'); document.getElementById('admin-panel').classList.add('hidden'); }
-    function logout() { document.getElementById('admin-panel').classList.add('hidden'); document.getElementById('login-panel').classList.add('hidden'); }
+    function showLogin() { 
+        document.getElementById('login-panel').classList.remove('hidden'); 
+        document.getElementById('admin-panel').classList.add('hidden'); 
+    }
     
-    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m) { return m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'; }); }
+    function logout() { 
+        document.getElementById('admin-panel').classList.add('hidden'); 
+        document.getElementById('login-panel').classList.add('hidden'); 
+    }
+    
+    function escapeHtml(str) { 
+        if(!str) return ''; 
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+    
+    // Оптимизированная обработка resize с debounce
+    let resizeTimeout;
+    function handleResize() {
+        if(resizeTimeout) clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            if(canvas) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                initParticles();
+            }
+        }, 150);
+    }
     
     // Инициализация
     window.onload = async () => {
         await initSecurity();
         loadData();
+        
         canvas = document.getElementById('particle-canvas');
         ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initParticles(); });
-        changeGlobalEffect(globalEffect);
-        animateParticles();
         
+        window.addEventListener('resize', handleResize);
+        
+        initParticles();
+        animateParticles(0);
+        
+        // Обработчики режимов
         document.querySelectorAll('.mode-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 currentMode = btn.dataset.mode;
                 renderTop();
             });
         });
+        
         renderTop();
+        
         if(window.location.search.includes('admin')) showLogin();
     };
     
+    // Глобальные функции для вызова из HTML
     window.saveDonation = saveDonation;
     window.removeDonation = removeDonation;
     window.resetNickColor = resetNickColor;
